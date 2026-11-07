@@ -1,0 +1,14 @@
+# Private research, kept local only
+reports/
+research_notes/
+
+# macOS
+.DS_Store
+
+# Xcode and Swift
+build/
+DerivedData/
+.build/
+.swiftpm/
+xcuserdata/
+*.xcuserstate
