@@ -119,11 +119,12 @@ Sources/
     App/            startup, menu bar, debug self-checks
     Desktop/        widget windows, glass, snapping, layout, Spaces, Mission Control
     Gallery/        the Widget Gallery
+    Updates/        updates from GitHub releases
     Widgets/        every widget, one file per group, and the registry
     Data/           system readings and services
     Support/        appearance, battery pacing, the mark, private interfaces
   hyaline-check/    checks that run without a screen
-scripts/            build-app.sh, make-icon.sh
+scripts/            build-app.sh, make-icon.sh, release.sh
 ```
 
 <br>
@@ -131,9 +132,12 @@ scripts/            build-app.sh, make-icon.sh
 ## <img src="https://api.iconify.design/lucide/rocket.svg?color=%238E9BB0" width="20" height="20">&nbsp; Getting Started
 
 ### Install
-There's no release yet, so build it from source below. When there is, it will be a DMG on [Releases](https://github.com/Bonevane/Hyaline/releases).
 
-The first time a widget needs Calendar, Reminders, Location or Automation (for Spotify and Music), macOS asks. The menu bar icon opens the gallery; right-click a widget for its look, options, snapping and Remove.
+1. **Download** `Hyaline-<version>.dmg` from [Releases](https://github.com/Bonevane/Hyaline/releases), open it and drag Hyaline onto Applications.
+2. **Open it.** It isn't notarized by Apple yet, so the first time macOS refuses. Click **Done**, then go to System Settings › Privacy & Security, scroll down and click **Open Anyway** next to Hyaline. After that it opens normally.
+3. **Add widgets** from **Widget Gallery…** in the menu bar. macOS asks for Calendar, Reminders, Location or Automation (for Spotify and Music) the first time a widget needs it. Right-click a widget for its look, options, snapping and Remove.
+
+Hyaline checks GitHub for new versions once a day. When one is out, **Update to Hyaline…** appears in the menu bar; it downloads, checks the checksum and signature, and installs and relaunches when you say so. **Open at Login** is in the same menu.
 
 ### Build from source
 
@@ -151,12 +155,19 @@ Builds and signs `build/Hyaline.app` ad hoc. Set `SIGN_IDENTITY` to a Developer 
 ```bash
 swift run hyaline-check
 ```
-Checks the widget sizes stack the way Apple's do, snapping and overlap, layouts across resolution changes (next to Apple's widgets, centred and edge-anchored), the widget list and the mark.
+Checks the widget sizes stack the way Apple's do, snapping and overlap, layouts across resolution changes (next to Apple's widgets, centred and edge-anchored), the widget list, the mark and update version ordering.
 
 ```bash
 CONFIG=debug scripts/build-app.sh && HYALINE_GALLERY=/some/folder build/Hyaline.app/Contents/MacOS/Hyaline
 ```
 Debug builds add self-checks that render every widget, or the gallery, to PNGs from off-screen windows. [`SelfChecks.swift`](Sources/HyalineKit/App/SelfChecks.swift) lists them. Nothing on your screen is ever captured. Hold Option while opening the menu for the Developer menu of glass controls.
+
+### Release
+
+```bash
+VERSION=0.2.0 scripts/release.sh
+```
+Runs the checks, builds and signs the app, and makes `build/release/Hyaline-<version>.dmg` with its `SHA256SUMS`. It signs with a Developer ID certificate if there is one (and notarizes with `NOTARY_PROFILE`), otherwise with the self-signed "Hyaline Dev" certificate. Release notes come from `release-notes/v<version>.md`. Add `PUBLISH=1` to create the GitHub release. The updater only installs releases signed by the same certificate as the running copy, so keep signing with the same one.
 
 <br>
 
@@ -171,7 +182,8 @@ Debug builds add self-checks that render every widget, or the gallery, to PNGs f
 - [x] **Click to open:** each widget opens its app or settings pane
 - [x] **Widget Gallery:** live previews, click or drag to add, style and options before adding
 - [x] **Open at login** from the menu bar
-- [ ] **Notarized DMG** and updates from GitHub
+- [x] **Updates from GitHub:** checked daily, downloaded with resume, verified, installed with one click
+- [ ] **Notarized DMG**, so the first launch needs no trip to Privacy & Security
 - [ ] **Settings window**
 - [ ] **Edit placed widgets** with the gallery's style popup
 - [ ] **Multiple displays**
@@ -182,7 +194,7 @@ Debug builds add self-checks that render every widget, or the gallery, to PNGs f
 ## <img src="https://api.iconify.design/lucide/heart-handshake.svg?color=%238E9BB0" width="20" height="20">&nbsp; Acknowledgements
 - [Open-Meteo](https://open-meteo.com): free weather data, no key needed
 - Apple's desktop widgets: the reference for every size, gap and shade here
-- [Bridge](https://github.com/Bonevane/Bridge) and [WheelBridge](https://github.com/Bonevane/WheelBridge): Hyaline's older siblings
+- [Bridge](https://github.com/Bonevane/Bridge) and [WheelBridge](https://github.com/Bonevane/WheelBridge): Hyaline's older siblings, and where its updater and release script come from
 
 Copyright © 2026 Bonevane. Hyaline is released under the [GNU General Public License v3.0](LICENSE). See [`NOTICE`](NOTICE) for details.
 
