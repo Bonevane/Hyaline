@@ -36,6 +36,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var styleItem: NSMenuItem?
     var developerItem: NSMenuItem?
     var loginItem: NSMenuItem?
+    var updateItem: NSMenuItem?
+    lazy var updates = UpdatesWindow()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         LayoutStore.importPrototypeLayouts()
@@ -76,6 +78,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
         }
         MissionControl.start()
+        Updater.shared.beforeInstall = { [weak self] in self?.saveLayout() }
+        Updater.shared.start()
     }
 
     /// Pending re-layouts after a screen change; a new change cancels the old ones.

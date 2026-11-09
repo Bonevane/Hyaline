@@ -4,11 +4,16 @@
 import AppKit
 import ServiceManagement
 
+@MainActor
 extension AppDelegate {
     func buildMenu() {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         item.button?.image = HyalineMark.menuBarImage()
         let menu = NSMenu()
+        // Shown only while a new version is waiting.
+        updateItem = menu.addItem(withTitle: "", action: #selector(showUpdates), keyEquivalent: "")
+        updateItem?.target = self
+        updateItem?.isHidden = true
         menu.addItem(withTitle: "Widget Gallery…", action: #selector(showGallery), keyEquivalent: "g").target = self
         menu.addItem(.separator())
         // Read-only: the widget style comes from System Settings › Appearance.
@@ -17,6 +22,7 @@ extension AppDelegate {
         menu.addItem(withTitle: "Keep above windows", action: #selector(toggleAbove(_:)), keyEquivalent: "").target = self
         menu.addItem(withTitle: "Reset layout", action: #selector(resetLayout), keyEquivalent: "").target = self
         menu.addItem(.separator())
+        menu.addItem(withTitle: "Check for Updates…", action: #selector(showUpdates), keyEquivalent: "").target = self
         loginItem = menu.addItem(withTitle: "Open at Login", action: #selector(toggleOpenAtLogin(_:)), keyEquivalent: "")
         loginItem?.target = self
         developerItem = menu.addItem(withTitle: "Developer", action: nil, keyEquivalent: "")
@@ -31,7 +37,15 @@ extension AppDelegate {
         styleItem?.title = "Widget style: \(appearance.style.rawValue) (System Settings)"
         developerItem?.isHidden = !NSEvent.modifierFlags.contains(.option)
         loginItem?.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        if let waiting = Updater.shared.release {
+            updateItem?.title = "Update to Hyaline \(waiting.version)…"
+            updateItem?.isHidden = false
+        } else {
+            updateItem?.isHidden = true
+        }
     }
+
+    @objc func showUpdates() { updates.show() }
 
     /// Registers Hyaline as a login item (System Settings › General › Login Items).
     @objc func toggleOpenAtLogin(_ sender: NSMenuItem) {
