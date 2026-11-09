@@ -1,4 +1,6 @@
-<!-- Banner to come: assets/hyaline-banner.png -->
+<p align="center">
+  <img src="assets/hyaline-banner.png" width="720" alt="Hyaline" />
+</p>
 
 # Hyaline
 
