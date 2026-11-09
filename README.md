@@ -170,8 +170,9 @@ Debug builds add self-checks that render every widget, or the gallery, to PNGs f
 - [x] **Battery pacing:** every widget still updates on battery, just less often
 - [x] **Click to open:** each widget opens its app or settings pane
 - [x] **Widget Gallery:** live previews, click or drag to add, style and options before adding
+- [x] **Open at login** from the menu bar
 - [ ] **Notarized DMG** and updates from GitHub
-- [ ] **Settings window** and launch at login
+- [ ] **Settings window**
 - [ ] **Edit placed widgets** with the gallery's style popup
 - [ ] **Multiple displays**
 - [ ] **More widgets**
@@ -183,7 +184,7 @@ Debug builds add self-checks that render every widget, or the gallery, to PNGs f
 - Apple's desktop widgets: the reference for every size, gap and shade here
 - [Bridge](https://github.com/Bonevane/Bridge) and [WheelBridge](https://github.com/Bonevane/WheelBridge): Hyaline's older siblings
 
-Hyaline is released under the [GNU General Public License v3.0](LICENSE).
+Copyright © 2026 Bonevane. Hyaline is released under the [GNU General Public License v3.0](LICENSE). See [`NOTICE`](NOTICE) for details.
 
 <br>
 
