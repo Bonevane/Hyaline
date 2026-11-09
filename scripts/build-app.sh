@@ -33,6 +33,7 @@ cat >"$app/Contents/Info.plist" <<PLIST
     <key>LSMinimumSystemVersion</key><string>26.0</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
+    <key>NSHumanReadableCopyright</key><string>Copyright © 2026 Bonevane. Released under the GNU GPL v3.</string>
     <key>NSCalendarsFullAccessUsageDescription</key><string>Hyaline shows your upcoming events in its calendar widgets.</string>
     <key>NSRemindersFullAccessUsageDescription</key><string>Hyaline shows your reminders and lets you tick them off from the widget.</string>
     <key>NSLocationUsageDescription</key><string>Hyaline uses your location for local weather and sunrise and sunset times.</string>
