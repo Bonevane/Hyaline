@@ -11,7 +11,8 @@ let package = Package(
         // Everything: widgets, data, the desktop windows and the gallery.
         .target(
             name: "HyalineKit",
-            swiftSettings: [.swiftLanguageMode(.v5)],
+            // Testable in every configuration, so hyaline-check builds in release too.
+            swiftSettings: [.swiftLanguageMode(.v5), .unsafeFlags(["-enable-testing"])],
             linkerSettings: [
                 .linkedFramework("IOKit"), .linkedFramework("CoreWLAN"),
                 .linkedFramework("EventKit"), .linkedFramework("CoreLocation"),
