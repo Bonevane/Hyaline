@@ -104,6 +104,28 @@ A click on any widget opens what it shows: Calendar, Activity Monitor, the playi
 
 <br>
 
+## <img src="https://api.iconify.design/lucide/images.svg?color=%238E9BB0" width="20" height="20">&nbsp; Visuals
+Real desktops, real glass. Every widget here is live.
+
+<p align="center">
+  <img src="assets/screenshots/everything.webp" width="100%" alt="A full desktop of Hyaline widgets: glass clock, calendar, clocks, batteries, storage, weather, Now Playing, system stats and power" />
+</p>
+
+| Night peaks | Blossom |
+| :---: | :---: |
+| <img src="assets/screenshots/night-peaks.webp" width="100%" alt="Glass clock above mountains at night, with Now Playing, mood, power and temperatures" /> | <img src="assets/screenshots/blossom.webp" width="100%" alt="Glass clock, week, weather and Now Playing beside cherry blossoms" /> |
+
+| Event Horizon | Lake |
+| :---: | :---: |
+| <img src="assets/screenshots/event-horizon.webp" width="100%" alt="System, CPU cores, temperatures and power widgets beside a black hole, with a glass clock" /> | <img src="assets/screenshots/lake.webp" width="100%" alt="Glass clock over snowy peaks, with weather, sun path and next up" /> |
+
+<p align="center">
+  <img src="assets/screenshots/sunset.webp" width="50%" alt="Mood poster, Now Playing player, vinyl and artwork, day arc, weather, week and clock strip on a sunset gradient" />
+  <br><sub>Sunset</sub>
+</p>
+
+<br>
+
 ## <img src="https://api.iconify.design/lucide/layers.svg?color=%238E9BB0" width="20" height="20">&nbsp; Tech Stack
 Swift, SwiftUI and AppKit, built as a Swift package with the Command Line Tools. No Xcode project and no dependencies.
 
