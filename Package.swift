@@ -16,6 +16,7 @@ let package = Package(
             linkerSettings: [
                 .linkedFramework("IOKit"), .linkedFramework("CoreWLAN"),
                 .linkedFramework("EventKit"), .linkedFramework("CoreLocation"),
+                .linkedFramework("ServiceManagement"),
             ]
         ),
         // The app: starts HyalineKit.

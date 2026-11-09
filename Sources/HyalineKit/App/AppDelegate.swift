@@ -35,6 +35,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     var styleItem: NSMenuItem?
     var developerItem: NSMenuItem?
+    var loginItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         LayoutStore.importPrototypeLayouts()

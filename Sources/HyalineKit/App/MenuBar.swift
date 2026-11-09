@@ -2,6 +2,7 @@
 // submenu that only appears when the menu is opened with Option held.
 
 import AppKit
+import ServiceManagement
 
 extension AppDelegate {
     func buildMenu() {
@@ -16,6 +17,8 @@ extension AppDelegate {
         menu.addItem(withTitle: "Keep above windows", action: #selector(toggleAbove(_:)), keyEquivalent: "").target = self
         menu.addItem(withTitle: "Reset layout", action: #selector(resetLayout), keyEquivalent: "").target = self
         menu.addItem(.separator())
+        loginItem = menu.addItem(withTitle: "Open at Login", action: #selector(toggleOpenAtLogin(_:)), keyEquivalent: "")
+        loginItem?.target = self
         developerItem = menu.addItem(withTitle: "Developer", action: nil, keyEquivalent: "")
         menu.setSubmenu(developerMenu(), for: developerItem!)
         menu.addItem(withTitle: "Quit Hyaline", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
@@ -27,6 +30,24 @@ extension AppDelegate {
         appearance.refresh()
         styleItem?.title = "Widget style: \(appearance.style.rawValue) (System Settings)"
         developerItem?.isHidden = !NSEvent.modifierFlags.contains(.option)
+        loginItem?.state = SMAppService.mainApp.status == .enabled ? .on : .off
+    }
+
+    /// Registers Hyaline as a login item (System Settings › General › Login Items).
+    @objc func toggleOpenAtLogin(_ sender: NSMenuItem) {
+        let service = SMAppService.mainApp
+        do {
+            if service.status == .enabled { try service.unregister() } else { try service.register() }
+        } catch {
+            let alert = NSAlert()
+            alert.messageText = "Couldn't change Open at Login"
+            alert.informativeText = error.localizedDescription
+            NSApp.activate()
+            alert.runModal()
+        }
+        // macOS may want approval in System Settings first.
+        if service.status == .requiresApproval { SMAppService.openSystemSettingsLoginItems() }
+        sender.state = service.status == .enabled ? .on : .off
     }
 
     /// Glass and clock tuning used while matching Apple's widgets.
