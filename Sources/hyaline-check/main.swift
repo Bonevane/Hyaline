@@ -1,5 +1,6 @@
 // Checks for the parts of Hyaline that don't need a screen: snapping, saving and
-// restoring layouts across resolution changes, the widget list, sizes and the mark.
+// restoring layouts across resolution changes, the widget list, sizes, the mark and
+// update version ordering.
 // Run with `swift run hyaline-check`. Command Line Tools ship no XCTest, so this is a
 // plain program that prints each result and exits non-zero on any failure.
 
@@ -87,6 +88,14 @@ let box = CGRect(x: 10, y: 10, width: 100, height: 100)
 let mark = HyalineMark.path(in: box)
 check(!mark.isEmpty && box.insetBy(dx: -0.5, dy: -0.5).contains(mark.boundingBoxOfPath), "the mark fills its box and stays inside it")
 check(HyalineMark.menuBarImage().isTemplate, "the menu-bar glyph is a template image")
+
+// MARK: Updates
+
+section("Updates")
+check(Updater.isNewer("0.3.10", than: "0.3.9"), "0.3.10 is newer than 0.3.9")
+check(Updater.isNewer("1.0", than: "0.9.9"), "1.0 is newer than 0.9.9")
+check(!Updater.isNewer("0.2.0", than: "0.2"), "0.2.0 isn't newer than 0.2")
+check(!Updater.isNewer("0.1.0", than: "0.2.0"), "an older release is never offered")
 
 print(failures == 0 ? "\nAll checks passed." : "\n\(failures) check(s) failed.")
 exit(failures == 0 ? 0 : 1)
