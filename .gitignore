@@ -1,6 +1,7 @@
-# Private research, kept local only
+# Private research and plans, kept local only
 reports/
 research_notes/
+plans/
 
 # macOS
 .DS_Store
@@ -12,3 +13,9 @@ DerivedData/
 .swiftpm/
 xcuserdata/
 *.xcuserstate
+
+# Throwaway experiments, kept local only
+prototypes/
+
+# Local Claude Code settings
+.claude/settings.local.json
