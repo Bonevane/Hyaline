@@ -38,6 +38,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var loginItem: NSMenuItem?
     var updateItem: NSMenuItem?
     lazy var updates = UpdatesWindow()
+    /// Set while a showcase layout is on screen; layouts aren't saved meanwhile.
+    var showcase: Showcase?
+    var showcaseItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         LayoutStore.importPrototypeLayouts()
@@ -149,7 +152,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func saveLayout() {
-        guard let screen = NSScreen.main else { return }
+        guard showcase == nil, let screen = NSScreen.main else { return }
         var entries: [String: LayoutStore.Entry] = [:]
         let frames = Dictionary(panels.map { ($0.widgetID, $0.frame) }, uniquingKeysWith: { a, _ in a })
         let anchors = LayoutStore.appleAnchors(frames, apple: Snapper.appleWidgetFrames(), in: screen.frame)

@@ -37,6 +37,9 @@ extension AppDelegate {
         styleItem?.title = "Widget style: \(appearance.style.rawValue) (System Settings)"
         developerItem?.isHidden = !NSEvent.modifierFlags.contains(.option)
         loginItem?.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        if let sub = showcaseItem?.submenu { refreshShowcaseMenu(sub) }
+        // Keep the Developer menu showing while a showcase runs, to switch or end it.
+        if showcase != nil { developerItem?.isHidden = false }
         if let waiting = Updater.shared.release {
             updateItem?.title = "Update to Hyaline \(waiting.version)…"
             updateItem?.isHidden = false
@@ -113,6 +116,9 @@ extension AppDelegate {
             e.target = self; e.tag = o; e.state = Double(o) == GlassClockView.opticalSize ? .on : .off
         }
         menu.setSubmenu(clockOptical, for: menu.addItem(withTitle: "Clock optical size", action: nil, keyEquivalent: ""))
+        menu.addItem(.separator())
+        showcaseItem = menu.addItem(withTitle: "Showcase", action: nil, keyEquivalent: "")
+        menu.setSubmenu(showcaseMenu(), for: showcaseItem!)
         return menu
     }
 
