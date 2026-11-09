@@ -4,6 +4,7 @@
 //   HYALINE_GALLERY=dir          every widget kind, on flat stand-in plates, to PNG pages
 //   HYALINE_GALLERY_ONLY=a,b     limit that to some kinds
 //   HYALINE_GALLERY_WINDOW=dir   the Widget Gallery and two edit popups, to PNGs
+//   HYALINE_SHOWCASE=dir         every showcase layout on a wallpaper, plates as stand-ins
 //   HYALINE_DEBUG_FRAMES=file    how many of Apple's widgets and which window layers are visible
 
 #if DEBUG
@@ -22,6 +23,7 @@ extension AppDelegate {
                                                                   add: { [unowned self] in self.addFromGallery($0, $1, $2) }))
             return true
         }
+        if let dir = env["HYALINE_SHOWCASE"] { showcasePreview(to: dir); return true }
         if let out = env["HYALINE_DEBUG_FRAMES"] {
             let all = CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[String: Any]] ?? []
             let lines = ["apple frames: \(Snapper.appleWidgetFrames().count)", "windows visible: \(all.count)",
@@ -30,6 +32,56 @@ extension AppDelegate {
             NSApp.terminate(nil); return true
         }
         return false
+    }
+
+    /// Every showcase layout over a wallpaper, at this screen's size, with flat
+    /// stand-ins for the glass. For checking composition before going live.
+    func showcasePreview(to dir: String) {
+        GalleryMode.on = true; SampleData.on = true
+        CalendarStore.shared.useSample(true)
+        panels.forEach { $0.orderOut(nil) }
+        sampler.start(); extras.start()
+        guard let screen = NSScreen.main else { NSApp.terminate(nil); return }
+        let full = screen.frame, visible = screen.visibleFrame
+        var windows: [(String, NSWindow)] = []
+        for (i, layout) in ShowcaseLayout.all.enumerated() {
+            let wallpaper = ShowcaseWallpaper.all[ShowcaseWallpaper.named(layout.wallpaper) ?? 0]
+            let items = layout.frames(in: visible)
+            let page = ZStack(alignment: .topLeading) {
+                ShowcaseWallpaperView(wallpaper: wallpaper)
+                ForEach(Array(items.enumerated()), id: \.offset) { _, item in
+                    let (kind, r) = item
+                    ZStack {
+                        if kind.look != .clear {
+                            RoundedRectangle(cornerRadius: Metrics.radius, style: .continuous).fill(Color.black.opacity(0.42))
+                            RoundedRectangle(cornerRadius: Metrics.radius, style: .continuous).strokeBorder(Color.white.opacity(0.22), lineWidth: 1)
+                        }
+                        (kind.configured?(self.context, WidgetConfig()) ?? kind.view?(self.context) ?? AnyView(
+                            Text("Glass clock").font(.system(size: 20, weight: .semibold)).foregroundStyle(.white.opacity(0.7))))
+                            .padding(Metrics.padding)
+                    }
+                    .frame(width: r.width, height: r.height).clipped()
+                    .offset(x: r.minX - full.minX, y: full.maxY - r.maxY)
+                }
+            }
+            .frame(width: full.width, height: full.height, alignment: .topLeading)
+            .environment(\.colorScheme, .dark)
+            let host = NSHostingView(rootView: page)
+            host.frame = NSRect(origin: .zero, size: full.size)
+            let w = NSWindow(contentRect: NSRect(x: -40_000 - CGFloat(i) * 3_000, y: -40_000, width: full.width, height: full.height),
+                             styleMask: [.borderless], backing: .buffered, defer: false)
+            w.contentView = host
+            w.orderFrontRegardless()
+            windows.append(("showcase-\(i + 1)-\(layout.name.lowercased())", w))
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
+            for (name, w) in windows {
+                guard let view = w.contentView, let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { continue }
+                view.cacheDisplay(in: view.bounds, to: rep)
+                try? rep.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: "\(dir)/\(name).png"))
+            }
+            NSApp.terminate(nil)
+        }
     }
 
     /// Self-check: renders every SwiftUI widget kind straight to PNG pages, inside the
